@@ -1,2 +1,3 @@
-# CCLNE-Worship
-Weekly worship repertoire app
+# CCLNE Worship
+
+Firebase-hosted worship repertoire app.
