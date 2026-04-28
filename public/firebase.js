@@ -3,54 +3,32 @@ import {
   getFirestore,
   doc,
   getDoc,
-  setDoc,
-  serverTimestamp
+  setDoc
 } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-/**
- * 🔴 IMPORTANT:
- * Replace this object with YOUR Firebase Web App config
- * (Firebase Console → Project settings → Your apps → Web app → Config)
- */
+/* ✅ Your Firebase config (what you pasted) */
 const firebaseConfig = {
-  apiKey: "PASTE_YOURS",
-  authDomain: "PASTE_YOURS",
-  projectId: "PASTE_YOURS",
-  storageBucket: "PASTE_YOURS",
-  messagingSenderId: "PASTE_YOURS",
-  appId: "PASTE_YOURS"
+  apiKey: "AIzaSyAhXX8e6Dbu7d5oipHhbAY_p7sR4r9CQNQ",
+  authDomain: "cclne-worship.firebaseapp.com",
+  projectId: "cclne-worship",
+  storageBucket: "cclne-worship.firebasestorage.app",
+  messagingSenderId: "933754252522",
+  appId: "1:933754252522:web:bc11e7859b650bbf79bb93"
 };
 
+/* Initialize Firebase */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/**
- * We store key/value documents in collection "kv"
- * docId = key (e.g., "cclne_week_2026_04_26")
- * fields: { value: "<json string>", updatedAt: serverTimestamp() }
- */
-async function kvGet(key) {
-  const ref = doc(db, "kv", key);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return null;
-  return snap.data()?.value ?? null;
-}
-
-async function kvSet(key, value) {
-  const ref = doc(db, "kv", key);
-  await setDoc(ref, { value, updatedAt: serverTimestamp() }, { merge: true });
-}
-
-/**
- * Compatibility layer: mimics window.storage.get(key, true) → { value }
- * and window.storage.set(key, value, true)
- */
+/* ✅ Storage adapter used by your app */
 export const storage = {
-  async get(key /*, shared */) {
-    const v = await kvGet(key);
-    return v == null ? null : { value: v };
+  async get(key) {
+    const ref = doc(db, "kv", key);
+    const snap = await getDoc(ref);
+    return snap.exists() ? { value: snap.data().value } : null;
   },
-  async set(key, value /*, shared */) {
-    await kvSet(key, value);
+  async set(key, value) {
+    const ref = doc(db, "kv", key);
+    await setDoc(ref, { value });
   }
 };
